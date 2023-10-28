@@ -1,25 +1,35 @@
 import { Inter } from "next/font/google";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import Link from "next/link";
+import BodyWithHeader from "@/components/common/Layouts/BodyWithHeader";
+import { useQuery } from "react-query";
+import { ApiGetAxios } from "@/api/client/ApiGet";
+import { GetCompetitions } from "@/api/client/routes";
+import { GetCompetitionsResponse } from "@/api/@types/competition";
+import CompetitionView from "@/components/modules/competition/CompetitionView";
+import React from "react";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const { user, error, isLoading } = useUser();
+  const { data, isLoading } = useQuery({
+    queryKey: "getAllCompetitions",
+    queryFn: async () =>
+      await ApiGetAxios<GetCompetitionsResponse>({}, GetCompetitions),
+  });
 
   return (
-    <div>
-      <h1>Next.js + Auth0 Example</h1>
-      {isLoading && <p>Loading login info...</p>}
-      {error && <p>{error.message}</p>}
-      {user && (
-        <>
-          <p>Welcome {user.name}!</p>
-          <p>Email: {user.email}</p>
-        </>
-      )}
-      <Link href="/api/auth/login">Login</Link>
-      <Link href="/api/auth/logout">Logout</Link>
-    </div>
+    <BodyWithHeader>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      {data?.data &&
+        !("error" in data.data) &&
+        data?.data?.map((competition) => (
+          <CompetitionView data={competition} key={competition.id} />
+        ))}
+    </BodyWithHeader>
   );
 }

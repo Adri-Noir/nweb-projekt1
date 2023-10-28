@@ -47,13 +47,13 @@ export default async function handler(
       });
     }
 
-    if (competition.rounds.length == 0) {
+    if (competition.rounds.length === 0) {
       return res.status(404).json({
         message: "Round not found",
       });
     }
     const round = competition.rounds[0];
-    if (round.matches.length == 0) {
+    if (round.matches.length === 0) {
       return res.status(404).json({
         message: "Match not found",
       });

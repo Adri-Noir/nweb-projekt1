@@ -39,8 +39,8 @@ export default async function handler(
           create: round_robin_rounds.map((round) => ({
             matches: {
               create: round.map((match) => ({
-                competitor1: match[0],
-                competitor2: match[1],
+                competitor1: match[0] !== "" ? match[0] : match[1],
+                competitor2: match[1] !== "" ? match[1] : match[0],
                 outcome: "0-0",
               })),
             },
