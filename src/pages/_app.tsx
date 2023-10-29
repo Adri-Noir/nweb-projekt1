@@ -14,6 +14,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <CssBaseline />
         <ThemeProvider theme={theme}>
+          <div className={"background"} />
           <Component {...pageProps} />
         </ThemeProvider>
       </QueryClientProvider>

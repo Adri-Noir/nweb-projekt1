@@ -29,3 +29,7 @@ export const newCompetitionPostRequestSchema = z.object({
   loss: z.number(),
   draw: z.number(),
 });
+
+export const GetCompetition = z.object({
+  id: z.string().uuid(),
+});

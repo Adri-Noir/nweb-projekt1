@@ -1,5 +1,5 @@
 import { CompetitionMatchRound } from "@/api/@types/competition";
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React from "react";
 
@@ -91,7 +91,7 @@ const CompetitionLeaderboard = ({ data }: ICompetitionViewProps) => {
     .flat();
 
   const allCompetitorsUnique = allCompetitors.filter(
-    (value, index, self) => self.indexOf(value) === index,
+    (value, index, self) => self.indexOf(value) === index && value !== "",
   );
 
   const calculateScoreForAll = allCompetitorsUnique.map((competitor) => {
@@ -103,9 +103,25 @@ const CompetitionLeaderboard = ({ data }: ICompetitionViewProps) => {
   });
 
   return (
-    <Box width={150 + 4 * 105}>
-      <DataGrid rows={calculateScoreForAll} columns={columns} />
-    </Box>
+    <Stack flexDirection={"row"} justifyContent={"center"}>
+      <Box maxWidth={150 + 4 * 105} minWidth={0}>
+        <DataGrid
+          rows={calculateScoreForAll}
+          columns={columns}
+          initialState={{
+            sorting: {
+              sortModel: [
+                {
+                  field: "score",
+                  sort: "desc",
+                },
+              ],
+            },
+            pagination: { paginationModel: { pageSize: 8 } },
+          }}
+        />
+      </Box>
+    </Stack>
   );
 };
 

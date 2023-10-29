@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import MethodNotAllowedResponse from "@/api/standard_response/MethodNotAllowedResponse";
 import datasource from "@/database/datasource";
 import { GetCompetitionsResponse } from "@/api/@types/competition";
 
@@ -13,15 +12,18 @@ export default async function handler(
         include: {
           rounds: {
             include: {
-              matches: true,
+              matches: {
+                orderBy: {
+                  id: "asc",
+                },
+              },
             },
           },
         },
       })
       .then((competitions) => {
+        datasource.$disconnect();
         return res.status(200).json(competitions);
       });
   }
-
-  return MethodNotAllowedResponse(res);
 }

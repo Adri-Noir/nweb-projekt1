@@ -1,12 +1,16 @@
 import React, { PropsWithChildren } from "react";
 import { Box } from "@mui/material";
-import Header from "@/components/common/Header";
+import Header, { IHeaderProps } from "@/components/common/Header";
 
-const BodyWithHeader = ({ children }: PropsWithChildren<{}>) => {
+const BodyWithHeader = ({
+  refetchData,
+  searchFn,
+  children,
+}: PropsWithChildren<IHeaderProps>) => {
   return (
     <Box>
-      <Header />
-      <Box paddingTop={"1rem"}>{children}</Box>
+      <Header refetchData={refetchData} searchFn={searchFn} />
+      <Box paddingY={"1rem"}>{children}</Box>
     </Box>
   );
 };

@@ -33,3 +33,9 @@ export type CompetitionMatchRound = {
 export type GetCompetitionsResponse =
   | CompetitionMatchRound[]
   | { error: unknown };
+
+export type GetCompetitionRequest = {
+  id: string;
+};
+
+export type GetCompetitionResponse = CompetitionMatchRound | { error: unknown };

@@ -167,8 +167,9 @@ const AddCompetitionModal = ({ open, handleClose }: IAddCompetitionModal) => {
                     size={"medium"}
                     error={!!errors.name}
                     helperText={errors.name}
+                    fullWidth={true}
                   />
-                  <Box>
+                  <Box width={"100%"}>
                     <Typography variant={"body2"} display={"inline-block"}>
                       Competitors:{" "}
                     </Typography>
@@ -210,6 +211,7 @@ const AddCompetitionModal = ({ open, handleClose }: IAddCompetitionModal) => {
                         value={values.competitor}
                         onChange={handleChange}
                         size={"medium"}
+                        fullWidth
                         onKeyDown={(event) => {
                           if (event.key === "Enter") {
                             if (values.competitor === "") return;

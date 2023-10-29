@@ -15,6 +15,7 @@ export default function handler(
         },
       })
       .then((rounds) => {
+        datasource.$disconnect();
         return res.status(200).json(rounds);
       });
   }

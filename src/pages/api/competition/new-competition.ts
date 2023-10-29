@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { NewCompetitionPostResponse } from "@/api/@types/competition";
 import JWTValidator from "@/api/validators/JWTValidator";
-import invalidJWTResponse from "@/api/standard_response/invalidJWTResponse";
+import InvalidJWTResponse from "@/api/standard_response/InvalidJWTResponse";
 import datasource from "@/database/datasource";
 import { newCompetitionPostRequestSchema } from "@/api/validators/competition";
 import round_robin_pairs from "@/api/algorithms/round_robin";
@@ -15,7 +15,7 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     const JWTValidation = await JWTValidator(req, res);
-    if (!JWTValidation) return invalidJWTResponse(res);
+    if (!JWTValidation) return InvalidJWTResponse(res);
 
     const validate = newCompetitionPostRequestSchema.safeParse(req.body);
     if (!validate.success)
@@ -40,8 +40,8 @@ export default async function handler(
             matches: {
               create: round.map((match) => ({
                 competitor1: match[0] !== "" ? match[0] : match[1],
-                competitor2: match[1] !== "" ? match[1] : match[0],
-                outcome: "0-0",
+                competitor2: match[0] === "" || match[1] === "" ? "" : match[1],
+                outcome: match[0] === "" || match[1] === "" ? "1-0" : "0-0",
               })),
             },
           })),
@@ -49,6 +49,7 @@ export default async function handler(
       },
     });
 
+    datasource.$disconnect();
     return res.status(200).json({});
   }
 

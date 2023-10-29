@@ -1,11 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import MethodNotAllowedResponse from "@/api/standard_response/MethodNotAllowedResponse";
 import JWTValidator from "@/api/validators/JWTValidator";
-import invalidJWTResponse from "@/api/standard_response/invalidJWTResponse";
+import InvalidJWTResponse from "@/api/standard_response/InvalidJWTResponse";
 import DataValidationFailedResponse from "@/api/standard_response/DataValidationFailedResponse";
 import { updateRoundScorePostRequestSchema } from "@/api/validators/match";
 import { getSession } from "@auth0/nextjs-auth0";
 import datasource from "@/database/datasource";
+import NotFoundResponse from "@/api/standard_response/NotFoundResponse";
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,7 +14,7 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     const JWTValidation = await JWTValidator(req, res);
-    if (!JWTValidation) return invalidJWTResponse(res);
+    if (!JWTValidation) return InvalidJWTResponse(res);
 
     const validate = updateRoundScorePostRequestSchema.safeParse(req.body);
     if (!validate.success)
@@ -37,27 +38,22 @@ export default async function handler(
               },
             },
           },
+          where: {
+            id: data.roundId,
+          },
         },
       },
     });
 
-    if (!competition) {
-      return res.status(404).json({
-        message: "Competition not found",
-      });
-    }
+    if (!competition) return NotFoundResponse(res, "Competition not found");
 
-    if (competition.rounds.length === 0) {
-      return res.status(404).json({
-        message: "Round not found",
-      });
-    }
+    if (competition.rounds.length === 0)
+      return NotFoundResponse(res, "Round not found");
+
     const round = competition.rounds[0];
-    if (round.matches.length === 0) {
-      return res.status(404).json({
-        message: "Match not found",
-      });
-    }
+    if (round.matches.length === 0)
+      return NotFoundResponse(res, "Match not found");
+
     const match = round.matches[0];
     match.outcome = data.outcome;
     await datasource.match.update({
@@ -69,6 +65,7 @@ export default async function handler(
       },
     });
 
+    datasource.$disconnect();
     return res.status(200).json({});
   }
 

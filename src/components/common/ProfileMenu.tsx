@@ -50,7 +50,12 @@ const ProfileMenu = (props: ProfileMenuProps) => {
           <Divider />
           <MenuItemWithoutHover disableRipple>
             <Button variant={"outlined"} color={"primary"}>
-              <Link href={"/api/auth/logout"}>Logout</Link>
+              <Link
+                href={"/api/auth/logout"}
+                style={{ color: "inherit", textDecoration: "none" }}
+              >
+                Logout
+              </Link>
             </Button>
           </MenuItemWithoutHover>
         </MenuList>
