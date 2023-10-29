@@ -21,6 +21,7 @@ import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import AddCompetitionModal from "@/components/modules/competition/AddCompetitionModal";
 import SearchIcon from "@mui/icons-material/Search";
+import Image from "next/image";
 
 const HEADER_HEIGHT = "60px";
 
@@ -69,9 +70,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export interface IHeaderProps {
   refetchData?: () => void;
   searchFn?: (value: string) => void;
+  hideSearch?: boolean;
 }
 
-const Header = ({ refetchData, searchFn }: IHeaderProps) => {
+const Header = ({ refetchData, searchFn, hideSearch = true }: IHeaderProps) => {
   const session = useUser();
   const menu = useMUIMenu();
   const [openAddCompetitionModal, setOpenAddCompetitionModal] =
@@ -83,7 +85,10 @@ const Header = ({ refetchData, searchFn }: IHeaderProps) => {
   };
   const [searchValue, setSearchValue] = useState("");
   const handleOnSearchValueChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(event.target.value);
+    setSearchValue(() => {
+      if (event.target.value === "") searchFn?.("");
+      return event.target.value;
+    });
   };
 
   return (
@@ -97,26 +102,42 @@ const Header = ({ refetchData, searchFn }: IHeaderProps) => {
       >
         <Box>
           <Stack direction={"row"} alignItems={"center"} gap={"1rem"}>
-            <Link
-              href={"/"}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <Typography variant={"h5"}> Tournament Frenzy </Typography>
-            </Link>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ "aria-label": "search" }}
-                value={searchValue}
-                onChange={handleOnSearchValueChange}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") searchFn?.(searchValue);
-                }}
+            <Link href={"/"}>
+              <Image
+                src={"/logo.png"}
+                alt={"Logo"}
+                width={40}
+                height={40}
+                style={{ borderRadius: 9999 }}
               />
-            </Search>
+            </Link>
+            <Box display={{ xs: "none", sm: "block" }}>
+              <Link
+                href={"/"}
+                style={{
+                  textDecoration: "none",
+                  color: "inherit",
+                }}
+              >
+                <Typography variant={"h5"}> Tournament Frenzy </Typography>
+              </Link>
+            </Box>
+            {!hideSearch && (
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  placeholder="Search…"
+                  inputProps={{ "aria-label": "search" }}
+                  value={searchValue}
+                  onChange={handleOnSearchValueChange}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") searchFn?.(searchValue);
+                  }}
+                />
+              </Search>
+            )}
           </Stack>
         </Box>
         {session?.user?.name && (

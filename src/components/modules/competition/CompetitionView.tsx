@@ -9,6 +9,7 @@ import {
   Paper,
   Snackbar,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { CompetitionMatchRound } from "@/api/@types/competition";
@@ -87,9 +88,11 @@ const CompetitionView = ({
           </Typography>
         </Link>
         {showCopyToClipboard && (
-          <IconButton onClick={copyToClipboard}>
-            <ContentCopyIcon />
-          </IconButton>
+          <Tooltip title={"Copy competition URL to clipboard"}>
+            <IconButton onClick={copyToClipboard}>
+              <ContentCopyIcon />
+            </IconButton>
+          </Tooltip>
         )}
       </Stack>
 
@@ -136,7 +139,7 @@ const CompetitionView = ({
       </Box>
       <Snackbar
         open={openSnackbar}
-        autoHideDuration={6000}
+        autoHideDuration={4000}
         onClose={() => setOpenSnackbar(false)}
         message="Copied competition URL to clipboard"
       />
