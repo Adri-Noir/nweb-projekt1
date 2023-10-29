@@ -95,7 +95,10 @@ const CompetitionView = ({
           </Tooltip>
         )}
       </Stack>
-
+      <Typography textAlign={"center"} variant="body1">
+        Win: {Number(data.win)} points, Draw: {Number(data.draw)} points, Loss:{" "}
+        {Number(data.loss)}
+      </Typography>
       <CompetitionLeaderboard data={data} />
       <Box mt={"0.5rem"}>
         {data.rounds.map((round, index) => (

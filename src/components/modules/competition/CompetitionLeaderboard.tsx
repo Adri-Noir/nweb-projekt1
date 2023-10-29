@@ -7,19 +7,6 @@ interface ICompetitionViewProps {
   data: CompetitionMatchRound;
 }
 
-const outcomeCalculator = (score: string) => {
-  switch (score) {
-    case "0-1":
-      return 1;
-    case "1-0":
-      return -1;
-    case "1-1":
-      return 0;
-    default:
-      return -2;
-  }
-};
-
 const columns: GridColDef[] = [
   { field: "name", type: "string", headerName: "Player", width: 150 },
   { field: "score", type: "number", headerName: "Score", width: 100 },
@@ -50,28 +37,30 @@ const calculateScore = (data: CompetitionMatchRound, competitor: string) => {
   let numberOfDraws = 0;
   data.rounds.forEach((round) => {
     round.matches.forEach((match) => {
-      const outcome = outcomeCalculator(match.outcome);
-      if (match.competitor1 === competitor && outcome === -1) {
+      if (match.competitor1 === competitor && match.outcome === "1-0") {
         score += Number(data.win);
         numberOfWins++;
         return;
-      } else if (match.competitor2 === competitor && outcome === 1) {
+      } else if (match.competitor2 === competitor && match.outcome === "0-1") {
         score += Number(data.win);
         numberOfWins++;
         return;
       }
 
-      if (match.competitor1 === competitor && outcome === 1) {
+      if (match.competitor1 === competitor && match.outcome === "0-1") {
         score += Number(data.loss);
         numberOfLosses++;
         return;
-      } else if (match.competitor2 === competitor && outcome === -1) {
+      } else if (match.competitor2 === competitor && match.outcome === "1-0") {
         score += Number(data.loss);
         numberOfLosses++;
         return;
       }
 
-      if (outcome === 0) {
+      if (
+        match.outcome === "1-1" &&
+        (match.competitor1 === competitor || match.competitor2 === competitor)
+      ) {
         score += Number(data.draw);
         numberOfDraws++;
       }
